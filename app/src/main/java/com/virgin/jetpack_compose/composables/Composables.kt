@@ -18,12 +18,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 
-
-
-
-
-
-
 // list view row item
 @Composable
 fun ListViewItem(member: TeamMembers) {
