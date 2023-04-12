@@ -1,6 +1,5 @@
 package com.virgin.jetpack_compose.model
 
-import com.virgin.jetpack_compose.R
 
 
 /**
@@ -9,8 +8,8 @@ import com.virgin.jetpack_compose.R
 sealed class NetworkState{
     object Initial : NetworkState()
     object Loading : NetworkState()
-    object Success : NetworkState()
+//    object Success : NetworkState()
     data class Error(val _message: String) : NetworkState()
-    data class Result<out T>(val _data: T) : NetworkState()
+    data class Success<out T>(val _data: T) : NetworkState()
 
 }
