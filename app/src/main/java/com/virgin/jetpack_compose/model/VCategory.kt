@@ -1,0 +1,3 @@
+ 
+
+class VCategory : ArrayList<VCategoryItem>()
