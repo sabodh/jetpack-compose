@@ -1,8 +1,11 @@
 package com.virgin.jetpack_compose
 
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -13,6 +16,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+
 
 // list view row item
 @Composable
@@ -102,5 +106,49 @@ fun ListHeader(header: String) {
             fontWeight = FontWeight.SemiBold,
             fontSize = 20.sp
         )
+    }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun List() {
+    // get all team members
+    val memberList = TeamRepo.getTeamDetails()
+    // filtering team members using team name
+    val teamApple = memberList.filter { it.team == TeamRepo.TEAM_APPLE }
+    val teamOrange = memberList.filter { it.team == TeamRepo.TEAM_ORANGE }
+    val teamLemon = memberList.filter { it.team == TeamRepo.TEAM_LEMON }
+
+    // rendering list view
+    LazyColumn(
+        contentPadding = PaddingValues(all = 5.dp),
+        verticalArrangement = Arrangement.spacedBy(5.dp),
+        modifier = Modifier
+            .background(Color.LightGray)
+
+    ) {
+        // team 1
+        // team name as header
+        stickyHeader {
+            ListHeader(header = TeamRepo.TEAM_APPLE)
+        }
+        // members in particular team
+        items(teamApple) { item ->
+            ListViewItem(member = item)
+        }
+        // team 2
+        stickyHeader {
+            ListHeader(header = TeamRepo.TEAM_ORANGE)
+        }
+        items(teamOrange) { item ->
+            ListViewItem(member = item)
+        }
+        // team 3
+        stickyHeader {
+            ListHeader(header = TeamRepo.TEAM_LEMON)
+        }
+        items(teamLemon) { item ->
+            ListViewItem(member = item)
+        }
     }
 }
