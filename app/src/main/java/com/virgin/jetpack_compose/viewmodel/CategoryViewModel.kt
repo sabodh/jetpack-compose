@@ -1,9 +1,10 @@
 package com.virgin.jetpack_compose.viewmodel
 
-import VCategory
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.virgin.jetpack_compose.model.NetworkState
+import com.virgin.jetpack_compose.presentation.LazyFormEvent
+import com.virgin.jetpack_compose.presentation.LazyFormState
 import com.virgin.jetpack_compose.repository.CategoryRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -19,15 +20,15 @@ class CategoryViewModel(
     val categoryState: StateFlow<NetworkState>
         get() = _categoryState
     // this is used to hold/update the data received from network api calls
-    private val _categories = MutableStateFlow<VCategory>(VCategory())
-    val categories: StateFlow<VCategory>
+    private val _categories = MutableStateFlow(LazyFormState())
+    val categories: StateFlow<LazyFormState>
         get() = _categories
 
 
     /**
      * Used to get the details from network call.
      */
-    fun getCategory() {
+    private fun getCategory() {
         // coroutine scope is used, and expected result is in the form of flow.
         viewModelScope.launch {
             try {
@@ -49,11 +50,30 @@ class CategoryViewModel(
         }
     }
 
-    /**
-     * This method is used to update the data flow collected from compose to the category state flow.
-     * so the state flow will automatically update the stored data in particular compose components.
-     */
-    fun updateCategories(category: VCategory){
-        _categories.value = category
+
+    fun onEvent(event: LazyFormEvent){
+        when(event){
+            is LazyFormEvent.ItemAdded->{
+
+            }
+            is LazyFormEvent.ItemRemoved->{
+                val current = _categories.value.vCategories
+                val categories = current.toMutableList().apply {
+                    remove(event.categoryItem)
+                }.toList()
+                _categories.value = _categories.value.copy(vCategories = categories)
+            }
+            is LazyFormEvent.UpdateCategory->{
+                /**
+                 * This method is used to update the data flow collected from compose to the category state flow.
+                 * so the state flow will automatically update the stored data in particular compose components.
+                 */
+                _categories.value =  _categories.value.copy(vCategories = event.category)
+            }
+            is LazyFormEvent.LoadCategory->{
+                getCategory()
+            }
+
+        }
     }
 }
