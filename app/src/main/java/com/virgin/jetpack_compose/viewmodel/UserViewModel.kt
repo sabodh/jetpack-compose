@@ -14,7 +14,6 @@ import com.virgin.jetpack_compose.viewmodel.use_case.UserNameValidator
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class UserViewModel(

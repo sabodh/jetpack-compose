@@ -8,11 +8,10 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
@@ -29,7 +28,7 @@ import com.virgin.jetpack_compose.viewmodel.CategoryViewModel
 fun CategoryList() {
     val viewModel = viewModel<CategoryViewModel>()
     LaunchedEffect(key1 = true) {
-        viewModel.getCategory()
+        viewModel.onEvent(LazyFormEvent.LoadCategory)
     }
     var categoryList: VCategory
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -59,23 +58,46 @@ fun CategoryList() {
         is NetworkState.Success<*> -> {
             // converting response to model class object
             categoryList = (networkState as NetworkState.Success<*>)._data as VCategory
-            viewModel.updateCategories(categoryList)
+            viewModel.onEvent(LazyFormEvent.UpdateCategory(categoryList))
             Log.e("flow:", "flow : Success $categoryList")
         }
     }
 
     Scaffold { innerPadding ->
-        LazyColumn(contentPadding = innerPadding) {
-            items(vCategories.value as List<VCategoryItem>) { category ->
-                ItemRow(category)
+        Box(modifier = Modifier.fillMaxWidth()) {
+            LazyColumn(contentPadding = innerPadding) {
+                items(
+                    vCategories.value.vCategories,
+                    key ={item -> item.VC_Code.toString() }) { category ->
+                    // override the onRemoveItemClick value here
+                    ItemRow(category, onRemoveItemClick = {
+                        viewModel.onEvent(LazyFormEvent.ItemRemoved(category))
+                    })
+                }
             }
         }
+        if (vCategories.value.vCategories.isEmpty()) {
+            loadProgressbar()
+        }
+    }
+
+}
+
+
+@Composable
+fun loadProgressbar() {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        CircularProgressIndicator()
     }
 }
 
 @Composable
 fun ItemRow(
-    category: VCategoryItem
+    category: VCategoryItem,
+    onRemoveItemClick:(category: VCategoryItem) -> Unit
 ) {
     Row(
         horizontalArrangement = Arrangement.spacedBy(10.dp),
@@ -84,7 +106,14 @@ fun ItemRow(
             .fillMaxWidth()
             .padding(8.dp)
     ) {
-        Image(painter = painterResource(id = R.drawable.ic_logo), contentDescription = null)
+        Image(
+            painter = painterResource(id = R.drawable.cricket_icon),
+            contentDescription = null,
+            modifier = Modifier
+                .padding(0.dp, 10.dp, 0.dp, 10.dp)
+                // clip is used to provide style to the image like curved corner etc.
+                .clip(MaterialTheme.shapes.small)
+        )
         Column {
             Text(
                 text = category.VC_Name.toString(),
@@ -92,9 +121,17 @@ fun ItemRow(
                 color = Color.Black
             )
             Text(
-                text = category.VC_NameEng.toString(),
+                text = category.VC_Code.toString(),
                 style = MaterialTheme.typography.body1,
                 color = Color.Black
+            )
+        }
+        Spacer(modifier = Modifier.weight(1f))
+        IconButton(
+            onClick = { onRemoveItemClick(category) }) {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_delete),
+                contentDescription = null
             )
         }
     }
