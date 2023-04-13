@@ -1,8 +1,6 @@
 package com.virgin.jetpack_compose.presentation.composables
 
-import Login
 import android.util.Log
-import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -18,7 +16,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -27,19 +24,11 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.virgin.jetpack_compose.R
 import com.virgin.jetpack_compose.model.NetworkState
 import com.virgin.jetpack_compose.presentation.LoginFormEvent
 import com.virgin.jetpack_compose.viewmodel.UserViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.withContext
 
 @Composable
 fun HomeScreen(
@@ -61,37 +50,8 @@ fun LoginUser(
         val viewModel = viewModel<UserViewModel>()
         val uiState = viewModel.uiState
         val context = LocalContext.current
-        var list: List<Login> = emptyList()
 
-        // ----------method 1.-----------
-        val lifecycleOwner = LocalLifecycleOwner.current
-        val flowLifecycleAware = remember(viewModel.loginState, lifecycleOwner) {
-            viewModel.loginState.flowWithLifecycle(
-                lifecycleOwner.lifecycle,
-                Lifecycle.State.STARTED
-            )
-        }
-        val networkState: NetworkState by flowLifecycleAware.collectAsState(initial = NetworkState.Initial)
-        LaunchedEffect(key1 = context) {
-            when (networkState) {
-                is NetworkState.Initial -> {
-                    Log.e("flow:", "flow : Initial")
-                }
-                is NetworkState.Loading -> {
-                    Log.e("flow:", "flow : Loading")
 
-                }
-                is NetworkState.Error -> {
-                    Log.e("flow:", "flow : Error")
-//                        Toast.makeTextText(context,"hello",Toast.LENGTH_SHORT).show()
-
-                }
-                is NetworkState.Success<*> -> {
-                    Log.e("flow:", "flow : success")
-//                        Toast.makeTextText(context,"hello",Toast.LENGTH_SHORT).show()
-                }
-            }
-            }
 // --------method 2----------------
 //        val result = viewModel.loginState.collectAsState()
 //        LaunchedEffect(key1 = context) {
@@ -118,7 +78,7 @@ fun LoginUser(
 //            }
 //        }
 // ------------------method 3-----------------
-            LaunchedEffect(key1 = true) {
+            LaunchedEffect(key1 = context) {
                 viewModel.loginState.collect {
                     when (it) {
                         is NetworkState.Initial -> {
@@ -126,19 +86,12 @@ fun LoginUser(
                         }
                         is NetworkState.Loading -> {
                             Log.e("flow:", "flow : Loading")
-
                         }
                         is NetworkState.Error -> {
                             Log.e("flow:", "flow : Error${it}")
-//                        Toast.makeTextText(context,"hello",Toast.LENGTH_SHORT).show()
-
                         }
                         is NetworkState.Success<*> -> {
                             Log.e("flow:", "flow : Result ${it._data.toString()}")
-                            list = it._data as List<Login>
-
-                            // Toast.makeText(context,it.toString(),Toast.LENGTH_SHORT).show()
-
                         }
                     }
                 }
