@@ -1,4 +1,4 @@
-package com.virgin.jetpack_compose
+package com.virgin.jetpack_compose.data.repository
 
 object TeamRepo {
     const val TEAM_APPLE = "TEAM APPLE"

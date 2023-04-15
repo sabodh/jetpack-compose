@@ -1,8 +1,8 @@
-package com.virgin.jetpack_compose.viewmodel.use_case
+package com.virgin.jetpack_compose.use_case
 
 class PasswordValidator {
 
-    fun execute(password: String): ValidationResult{
+    fun execute(password: String): ValidationResult {
         if(password.isBlank()){
             return ValidationResult(
                 isSuccess = false,

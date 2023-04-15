@@ -1,22 +1,22 @@
-package com.virgin.jetpack_compose.viewmodel
+package com.virgin.jetpack_compose.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.virgin.jetpack_compose.model.NetworkState
-import com.virgin.jetpack_compose.presentation.LazyFormEvent
-import com.virgin.jetpack_compose.presentation.LazyFormState
-import com.virgin.jetpack_compose.repository.CategoryRepository
+import com.virgin.jetpack_compose.data.repository.CategoryRepository
+import com.virgin.jetpack_compose.domain.LazyFormEvent
+import com.virgin.jetpack_compose.domain.LazyFormState
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
-
+import com.virgin.jetpack_compose.data.model.NetworkState
 class CategoryViewModel(
     private val repository: CategoryRepository = CategoryRepository()
 ) : ViewModel() {
 
     // this is used to identify the network call status
-    private val _categoryState = MutableStateFlow<NetworkState>(NetworkState.Initial)
+    private val _categoryState = MutableStateFlow<NetworkState>(
+        NetworkState.Initial)
     val categoryState: StateFlow<NetworkState>
         get() = _categoryState
     // this is used to hold/update the data received from network api calls
