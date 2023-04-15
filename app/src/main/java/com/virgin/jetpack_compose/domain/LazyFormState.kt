@@ -1,4 +1,4 @@
-package com.virgin.jetpack_compose.presentation
+package com.virgin.jetpack_compose.domain
 
 import VCategoryItem
 

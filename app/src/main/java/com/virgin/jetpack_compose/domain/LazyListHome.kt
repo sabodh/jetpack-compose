@@ -1,4 +1,4 @@
-package com.virgin.jetpack_compose.presentation
+package com.virgin.jetpack_compose.domain
 
 import VCategory
 import VCategoryItem
@@ -18,11 +18,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.virgin.jetpack_compose.R
-import com.virgin.jetpack_compose.model.NetworkState
-import com.virgin.jetpack_compose.viewmodel.CategoryViewModel
+import com.virgin.jetpack_compose.data.model.NetworkState
+import com.virgin.jetpack_compose.presentation.viewmodel.CategoryViewModel
 
 @Composable
 fun CategoryList() {
@@ -39,7 +40,7 @@ fun CategoryList() {
         )
     }
     // get updated categories from view model
-    val vCategories = viewModel.categories.collectAsState()
+    val vCategories = viewModel.categories.collectAsStateWithLifecycle()
 
     val networkState: NetworkState by flowLifecycleAware
         .collectAsState(initial = NetworkState.Initial)
@@ -65,10 +66,13 @@ fun CategoryList() {
 
     Scaffold { innerPadding ->
         Box(modifier = Modifier.fillMaxWidth()) {
-            LazyColumn(contentPadding = innerPadding) {
+            LazyColumn(
+                contentPadding = innerPadding
+//                modifier = Modifier.animateItemPlacement()
+            ) {
                 items(
                     vCategories.value.vCategories,
-                    key ={item -> item.VC_Code.toString() }) { category ->
+                    key = { item -> item.VC_Code.toString() }) { category ->
                     // override the onRemoveItemClick value here
                     ItemRow(category, onRemoveItemClick = {
                         viewModel.onEvent(LazyFormEvent.ItemRemoved(category))
@@ -97,7 +101,7 @@ fun loadProgressbar() {
 @Composable
 fun ItemRow(
     category: VCategoryItem,
-    onRemoveItemClick:(category: VCategoryItem) -> Unit
+    onRemoveItemClick: (category: VCategoryItem) -> Unit
 ) {
     Row(
         horizontalArrangement = Arrangement.spacedBy(10.dp),
@@ -125,6 +129,7 @@ fun ItemRow(
                 style = MaterialTheme.typography.body1,
                 color = Color.Black
             )
+
         }
         Spacer(modifier = Modifier.weight(1f))
         IconButton(

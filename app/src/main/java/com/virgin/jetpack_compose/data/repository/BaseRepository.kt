@@ -1,4 +1,4 @@
-package com.virgin.jetpack_compose.repository
+package com.virgin.jetpack_compose.data.repository
 
 import ServiceEndpoints
 

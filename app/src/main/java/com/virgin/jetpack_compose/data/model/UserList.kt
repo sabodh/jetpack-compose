@@ -1,4 +1,4 @@
-package com.virgin.jetpack_compose.model
+package com.virgin.jetpack_compose.data.model
 
 import Login
 

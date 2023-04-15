@@ -1,16 +1,16 @@
-package com.virgin.jetpack_compose.viewmodel
+package com.virgin.jetpack_compose.presentation.viewmodel
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.virgin.jetpack_compose.model.NetworkState
-import com.virgin.jetpack_compose.presentation.LoginFormEvent
-import com.virgin.jetpack_compose.presentation.LoginFormState
-import com.virgin.jetpack_compose.repository.UserRepository
-import com.virgin.jetpack_compose.viewmodel.use_case.PasswordValidator
-import com.virgin.jetpack_compose.viewmodel.use_case.UserNameValidator
+import com.virgin.jetpack_compose.data.model.NetworkState
+import com.virgin.jetpack_compose.data.repository.UserRepository
+import com.virgin.jetpack_compose.domain.LoginFormEvent
+import com.virgin.jetpack_compose.domain.LoginFormState
+import com.virgin.jetpack_compose.use_case.PasswordValidator
+import com.virgin.jetpack_compose.use_case.UserNameValidator
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.catch
@@ -22,7 +22,8 @@ class UserViewModel(
 
 ) : ViewModel() {
     private val userRepository = UserRepository()
-    private val _loginState = MutableStateFlow<NetworkState>(NetworkState.Initial)
+    private val _loginState = MutableStateFlow<NetworkState>(
+        NetworkState.Initial)
     val loginState: StateFlow<NetworkState>
         get() = _loginState
 

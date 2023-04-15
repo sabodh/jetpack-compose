@@ -1,8 +1,8 @@
-package com.virgin.jetpack_compose.viewmodel.use_case
+package com.virgin.jetpack_compose.use_case
 
 class UserNameValidator {
 
-    fun execute(username: String): ValidationResult{
+    fun execute(username: String): ValidationResult {
         if(username.isBlank()){
             return ValidationResult(
                 isSuccess = false,

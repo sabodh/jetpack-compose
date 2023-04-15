@@ -16,6 +16,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.virgin.jetpack_compose.data.repository.TeamMembers
+import com.virgin.jetpack_compose.data.repository.TeamRepo
 
 
 // list view row item

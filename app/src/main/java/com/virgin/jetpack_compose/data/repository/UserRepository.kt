@@ -1,9 +1,9 @@
-package com.virgin.jetpack_compose.repository
+package com.virgin.jetpack_compose.data.repository
 
 import Login
 import ServiceBuilder
 import ServiceEndpoints
-import com.virgin.jetpack_compose.model.UserList
+import com.virgin.jetpack_compose.data.model.UserList
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flow
@@ -13,7 +13,7 @@ import retrofit2.Response
 
 class UserRepository(
     private val defaultDispatcher: CoroutineDispatcher = Dispatchers.IO
-) : BaseRepository() {
+) : com.virgin.jetpack_compose.data.repository.BaseRepository() {
     suspend fun validateLogin(
         userName: String,
         password: String,

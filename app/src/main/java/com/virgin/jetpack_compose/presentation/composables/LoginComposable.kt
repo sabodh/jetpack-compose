@@ -26,9 +26,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.virgin.jetpack_compose.R
-import com.virgin.jetpack_compose.model.NetworkState
-import com.virgin.jetpack_compose.presentation.LoginFormEvent
-import com.virgin.jetpack_compose.viewmodel.UserViewModel
+import com.virgin.jetpack_compose.domain.LoginFormEvent
+import com.virgin.jetpack_compose.presentation.viewmodel.UserViewModel
 
 @Composable
 fun HomeScreen(
@@ -81,16 +80,16 @@ fun LoginUser(
             LaunchedEffect(key1 = context) {
                 viewModel.loginState.collect {
                     when (it) {
-                        is NetworkState.Initial -> {
+                        is com.virgin.jetpack_compose.data.model.NetworkState.Initial -> {
                             Log.e("flow:", "flow : Initial")
                         }
-                        is NetworkState.Loading -> {
+                        is com.virgin.jetpack_compose.data.model.NetworkState.Loading -> {
                             Log.e("flow:", "flow : Loading")
                         }
-                        is NetworkState.Error -> {
+                        is com.virgin.jetpack_compose.data.model.NetworkState.Error -> {
                             Log.e("flow:", "flow : Error${it}")
                         }
-                        is NetworkState.Success<*> -> {
+                        is com.virgin.jetpack_compose.data.model.NetworkState.Success<*> -> {
                             Log.e("flow:", "flow : Result ${it._data.toString()}")
                         }
                     }

@@ -1,4 +1,4 @@
-package com.virgin.jetpack_compose.viewmodel.use_case
+package com.virgin.jetpack_compose.use_case
 
 data class ValidationResult(
     val isSuccess: Boolean = false,

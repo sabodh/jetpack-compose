@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">jetpack_compose</string>
+    <string name="empty_password">Password cant be empty</string>
 </resources>
