@@ -12,7 +12,7 @@ object ServiceBuilder {
         )
         .build()
     private val retrofit = Retrofit.Builder()
-        .baseUrl("https://google.com/")
+        .baseUrl("")
         .addConverterFactory(GsonConverterFactory.create())
         .client(client)
         .build()

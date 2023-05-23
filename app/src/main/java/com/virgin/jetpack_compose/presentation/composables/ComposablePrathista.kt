@@ -1,7 +1,7 @@
 package com.virgin.jetpack_compose.domain
 
-import VCategory
-import VCategoryItem
+import PrathistaList
+import PrathistaListItem
 import android.util.Log
 import androidx.compose.ui.Alignment
 import androidx.compose.foundation.Image
@@ -13,38 +13,25 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.virgin.jetpack_compose.R
 import com.virgin.jetpack_compose.data.model.NetworkState
-import com.virgin.jetpack_compose.presentation.viewmodel.CategoryViewModel
+import com.virgin.jetpack_compose.presentation.viewmodel.PrathistaViewModel
 
 @Composable
-fun CategoryList() {
-    val viewModel = viewModel<CategoryViewModel>()
+fun PrathistaView() {
+    val viewModel = viewModel<PrathistaViewModel>()
     LaunchedEffect(key1 = true) {
-        viewModel.onEvent(LazyFormEvent.LoadCategory)
+        viewModel.getPrathista()
     }
-    var categoryList: VCategory
-    val lifecycleOwner = LocalLifecycleOwner.current
-    val flowLifecycleAware = remember(viewModel.categoryState, lifecycleOwner) {
-        viewModel.categoryState.flowWithLifecycle(
-            lifecycleOwner.lifecycle,
-            Lifecycle.State.STARTED
-        )
-    }
+    var prathistaList = PrathistaList()
     // get updated categories from view model
-    val vCategories = viewModel.categories.collectAsStateWithLifecycle()
-
-    val networkState: NetworkState by flowLifecycleAware
-        .collectAsState(initial = NetworkState.Initial)
-    when (networkState) {
+    val prathistaState = viewModel.prathistaState.collectAsStateWithLifecycle()
+    when (prathistaState.value) {
         is NetworkState.Initial -> {
             Log.e("flow:", "flow : Initial")
         }
@@ -58,29 +45,27 @@ fun CategoryList() {
         }
         is NetworkState.Success<*> -> {
             // converting response to model class object
-            categoryList = (networkState as NetworkState.Success<*>)._data as VCategory
-            viewModel.onEvent(LazyFormEvent.UpdateCategory(categoryList))
-            Log.e("flow:", "flow : Success $categoryList")
+            prathistaList = (prathistaState.value as NetworkState.Success<*>)._data as PrathistaList
+            Log.e("flow:", "flow : Success $prathistaList")
         }
     }
 
     Scaffold { innerPadding ->
         Box(modifier = Modifier.fillMaxWidth()) {
             LazyColumn(
-                contentPadding = innerPadding
+                contentPadding = innerPadding)
 //                modifier = Modifier.animateItemPlacement()
-            ) {
-                items(
-                    vCategories.value.vCategories,
-                    key = { item -> item.VC_Code.toString() }) { category ->
-                    // override the onRemoveItemClick value here
-                    ItemRow(category, onRemoveItemClick = {
-                        viewModel.onEvent(LazyFormEvent.ItemRemoved(category))
-                    })
+                {
+                    items(
+                        prathistaList,
+                        key = { item -> item.PM_Code.toString() }) { prathista ->
+                        // override the onRemoveItemClick value here
+                        ItemRow(prathista, onRemoveItemClick = {})
+                    }
                 }
-            }
+
         }
-        if (vCategories.value.vCategories.isEmpty()) {
+        if (prathistaList.isEmpty()) {
             loadProgressbar()
         }
     }
@@ -89,19 +74,9 @@ fun CategoryList() {
 
 
 @Composable
-fun loadProgressbar() {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        CircularProgressIndicator()
-    }
-}
-
-@Composable
 fun ItemRow(
-    category: VCategoryItem,
-    onRemoveItemClick: (category: VCategoryItem) -> Unit
+    category: PrathistaListItem,
+    onRemoveItemClick: (category: PrathistaListItem) -> Unit
 ) {
     Row(
         horizontalArrangement = Arrangement.spacedBy(10.dp),
@@ -120,17 +95,18 @@ fun ItemRow(
         )
         Column {
             Text(
-                text = category.VC_Name.toString(),
+                text = category.PM_NameEng.toString(),
                 style = MaterialTheme.typography.h6,
                 color = Color.Black
             )
             Text(
-                text = category.VC_Code.toString(),
+                text = category.PM_Code.toString(),
                 style = MaterialTheme.typography.body1,
                 color = Color.Black
             )
 
         }
+        
         Spacer(modifier = Modifier.weight(1f))
         IconButton(
             onClick = { onRemoveItemClick(category) }) {
@@ -145,6 +121,6 @@ fun ItemRow(
 
 @Preview(showBackground = true)
 @Composable
-fun ListPreview() {
-    CategoryList()
+fun PrathistaPreview() {
+    PrathistaView()
 }
